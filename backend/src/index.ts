@@ -21,6 +21,10 @@ app.use('/generate', generateRouter);
 app.use('/drafts', draftsRouter);
 
 app.get('/', (_req, res) => {
+  res.json("Server up and running!");
+});
+
+app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
