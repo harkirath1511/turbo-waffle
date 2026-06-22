@@ -41,14 +41,12 @@ turbo-waffle/
 │   │   ├── types.ts                  # shared TypeScript types
 │   │   └── index.ts                  # Express app entry
 │   ├── supabase_schema.sql           # Run this in your Supabase SQL editor
-│   └── .env.example
 └── frontend/
     ├── src/
     │   ├── components/               # Navbar, CopyButton, ProtectedRoute
     │   ├── lib/                      # api.ts, supabase.ts, AuthContext, types
     │   ├── pages/                    # AuthPage, ProfilePage, GeneratePage, DraftsPage
     │   └── App.tsx
-    └── .env.example
 ```
 
 ---
