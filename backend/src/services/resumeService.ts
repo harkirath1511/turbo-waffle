@@ -1,5 +1,5 @@
 import fs from 'fs';
-// eslint-disable-next-line @typescript-eslint/no-require-imports
+
 const pdfParse: (buf: Buffer) => Promise<{ text: string }> = require('pdf-parse');
 import Groq from 'groq-sdk';
 

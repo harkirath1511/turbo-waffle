@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+  limits: { fileSize: 10 * 1024 * 1024 }, 
   fileFilter: (_req, file, cb) => {
     const allowed = ['application/pdf', 'text/plain'];
     if (allowed.includes(file.mimetype)) {
@@ -30,8 +30,8 @@ const upload = multer({
   },
 });
 
-// POST /resume/parse
-// Upload a resume file, get back a draft profile object
+
+
 router.post('/parse', upload.single('resume'), async (req: Request, res: Response) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No file uploaded' });
@@ -39,7 +39,7 @@ router.post('/parse', upload.single('resume'), async (req: Request, res: Respons
 
   try {
     const extracted = await extractProfileFromResume(req.file.path, req.file.mimetype);
-    // Clean up uploaded file after parsing
+    
     fs.unlink(req.file.path, () => {});
     res.json(extracted);
   } catch (err) {
