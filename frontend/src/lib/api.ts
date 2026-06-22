@@ -3,7 +3,7 @@ import type { Profile, Draft, GeneratedOutput, OutreachGoal } from './types';
 
 const api = axios.create({ baseURL: '/api' });
 
-// Profiles
+
 export const getProfiles = () => api.get<Profile[]>('/profiles').then(r => r.data);
 export const getProfile = (id: string) => api.get<Profile>(`/profiles/${id}`).then(r => r.data);
 export const createProfile = (data: Omit<Profile, 'id' | 'created_at' | 'updated_at'>) =>
@@ -12,7 +12,7 @@ export const updateProfile = (id: string, data: Partial<Omit<Profile, 'id' | 'cr
   api.put<Profile>(`/profiles/${id}`, data).then(r => r.data);
 export const deleteProfile = (id: string) => api.delete(`/profiles/${id}`).then(r => r.data);
 
-// Resume parsing
+
 export const parseResume = (file: File) => {
   const form = new FormData();
   form.append('resume', file);
@@ -21,7 +21,7 @@ export const parseResume = (file: File) => {
   }).then(r => r.data);
 };
 
-// Generate
+
 export const generate = (payload: {
   profile_id: string;
   company_name: string;
@@ -30,7 +30,7 @@ export const generate = (payload: {
   save?: boolean;
 }) => api.post<{ output: GeneratedOutput; draft: Draft | null }>('/generate', payload).then(r => r.data);
 
-// Drafts
+
 export const getDrafts = () => api.get<Draft[]>('/drafts').then(r => r.data);
 export const getDraftsByProfile = (profileId: string) =>
   api.get<Draft[]>(`/drafts/profile/${profileId}`).then(r => r.data);
