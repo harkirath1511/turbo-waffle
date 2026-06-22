@@ -12,22 +12,7 @@ const GOAL_CONTEXT: Record<OutreachGoal, string> = {
   'Mentorship': 'seeking mentorship and guidance',
 };
 
-export async function generateOutreach(
-  profile: Profile,
-  companyName: string,
-  companyDescription: string,
-  goal: OutreachGoal
-): Promise<GeneratedOutput> {
-  const goalContext = GOAL_CONTEXT[goal];
-
-  const completion = await groq.chat.completions.create({
-    model: 'llama-3.3-70b-versatile',
-    temperature: 0.7,
-    response_format: { type: 'json_object' },
-    messages: [
-      {
-        role: 'system',
-        content: `You are a master at writing cold outreach emails that actually get replies. Your emails sound like they were written by a real, thoughtful person — not a template, not a bot.
+const BASE_SYSTEM_PROMPT = `You are a master at writing cold outreach emails that actually get replies. Your emails sound like they were written by a real, thoughtful person — not a template, not a bot.
 
 Rules you must follow:
 - Never open with "I hope this email finds you well", "My name is...", "I'm reaching out because...", or any similar filler
@@ -45,27 +30,41 @@ Always return a JSON object with exactly these fields:
 - why_company: 2-3 sentences on what genuinely interests them about this company
 - why_user: 2-3 sentences on why they specifically are relevant or valuable to this company
 - conversation_starter: one thoughtful question or observation that invites a real reply
-- full_email: the complete ready-to-send email combining all elements, signed off with the person's name`,
-      },
+- full_email: the complete ready-to-send email combining all elements, signed off with the person's name`;
+
+export async function generateOutreach(
+  profile: Profile,
+  companyName: string,
+  companyDescription: string,
+  goal: OutreachGoal,
+  customInstructions?: string
+): Promise<GeneratedOutput> {
+  const systemPrompt = customInstructions?.trim()
+    ? `${BASE_SYSTEM_PROMPT}\n\nAdditional instructions from the user:\n${customInstructions.trim()}`
+    : BASE_SYSTEM_PROMPT;
+
+  const completion = await groq.chat.completions.create({
+    model: 'llama-3.3-70b-versatile',
+    temperature: 0.7,
+    response_format: { type: 'json_object' },
+    messages: [
+      { role: 'system', content: systemPrompt },
       {
         role: 'user',
-        content: `Write a cold outreach email for someone ${goalContext}.
+        content: `Write a cold outreach email for someone ${GOAL_CONTEXT[goal]}.
 
-PERSON'S PROFILE:
+PERSON:
 Name: ${profile.name}
-Email: ${profile.email || 'not provided'}
 Education: ${profile.education}
 Experience: ${profile.experience}
-Skills: ${profile.skills}
+Skills: ${Array.isArray(profile.skills) ? profile.skills.join(', ') : profile.skills}
 Interests: ${profile.interests}
 Goals: ${profile.goals}
-${profile.extra ? `Additional info: ${profile.extra}` : ''}
+${profile.extra ? `Other: ${profile.extra}` : ''}
 
-TARGET COMPANY:
-Company name: ${companyName}
-Company description: ${companyDescription}
-
-Goal of outreach: ${goal}`,
+COMPANY:
+Name: ${companyName}
+About: ${companyDescription}`,
       },
     ],
   });

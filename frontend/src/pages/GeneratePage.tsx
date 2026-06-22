@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { Loader2, RefreshCw, ChevronDown } from 'lucide-react';
+import { Loader2, RefreshCw, ChevronDown, SlidersHorizontal } from 'lucide-react';
 import * as api from '../lib/api';
 import { GOALS } from '../lib/types';
 import type { Profile, GeneratedOutput, OutreachGoal } from '../lib/types';
@@ -14,9 +14,11 @@ export default function GeneratePage() {
   const [companyName, setCompanyName] = useState('');
   const [companyDesc, setCompanyDesc] = useState('');
   const [goal, setGoal] = useState<OutreachGoal>('Job Opportunity');
+  const [customInstructions, setCustomInstructions] = useState('');
+  const [showCustom, setShowCustom] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [output, setOutput] = useState<GeneratedOutput | null>(null);
-  const [lastInput, setLastInput] = useState<{ companyName: string; companyDesc: string; goal: OutreachGoal } | null>(null);
+  const [lastInput, setLastInput] = useState<{ companyName: string; companyDesc: string; goal: OutreachGoal; customInstructions: string } | null>(null);
 
   useEffect(() => {
     api.getProfiles().then(profiles => {
@@ -35,9 +37,9 @@ export default function GeneratePage() {
       return;
     }
     setGenerating(true);
-    setLastInput({ companyName, companyDesc, goal });
+    setLastInput({ companyName, companyDesc, goal, customInstructions });
     try {
-      const res = await api.generate({ profile_id: profile.id, company_name: companyName, company_description: companyDesc, goal });
+      const res = await api.generate({ profile_id: profile.id, company_name: companyName, company_description: companyDesc, goal, custom_instructions: customInstructions || undefined });
       setOutput(res.output);
       if (res.draft) toast.success('Saved to drafts');
     } catch {
@@ -51,7 +53,7 @@ export default function GeneratePage() {
     if (!lastInput || !profile) return;
     setGenerating(true);
     try {
-      const res = await api.generate({ profile_id: profile.id, company_name: lastInput.companyName, company_description: lastInput.companyDesc, goal: lastInput.goal });
+      const res = await api.generate({ profile_id: profile.id, company_name: lastInput.companyName, company_description: lastInput.companyDesc, goal: lastInput.goal, custom_instructions: lastInput.customInstructions || undefined });
       setOutput(res.output);
       toast.success('Regenerated and saved');
     } catch {
@@ -126,6 +128,31 @@ export default function GeneratePage() {
             </select>
             <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
           </div>
+        </div>
+
+        <div>
+          <button
+            type="button"
+            onClick={() => setShowCustom(v => !v)}
+            className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+          >
+            <SlidersHorizontal size={14} />
+            Custom instructions
+            <span className="text-xs text-gray-400">(optional)</span>
+            <ChevronDown size={13} className={`transition-transform ${showCustom ? 'rotate-180' : ''}`} />
+          </button>
+          {showCustom && (
+            <div className="mt-2.5">
+              <textarea
+                rows={3}
+                value={customInstructions}
+                onChange={e => setCustomInstructions(e.target.value)}
+                placeholder="e.g. Keep it under 150 words. Make it sound more casual. Mention my open-source project. Focus on their recent funding round."
+                className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition"
+              />
+              <p className="text-xs text-gray-400 mt-1">These instructions are appended to the AI prompt and override the default tone/style for this generation only.</p>
+            </div>
+          )}
         </div>
 
         <button

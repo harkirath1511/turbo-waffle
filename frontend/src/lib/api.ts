@@ -27,6 +27,7 @@ export const generate = (payload: {
   company_name: string;
   company_description: string;
   goal: OutreachGoal;
+  custom_instructions?: string;
   save?: boolean;
 }) => api.post<{ output: GeneratedOutput; draft: Draft | null }>('/generate', payload).then(r => r.data);
 

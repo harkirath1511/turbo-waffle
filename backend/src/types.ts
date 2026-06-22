@@ -12,7 +12,7 @@ export interface Profile {
   email?: string;
   education: string;
   experience: string;
-  skills: string;
+  skills: string[];
   interests: string;
   goals: string;
   extra?: string;

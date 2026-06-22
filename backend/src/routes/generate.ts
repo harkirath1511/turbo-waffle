@@ -21,6 +21,7 @@ const GenerateSchema = z.object({
   company_name: z.string().min(1),
   company_description: z.string().min(10),
   goal: z.enum(GOALS as [OutreachGoal, ...OutreachGoal[]]),
+  custom_instructions: z.string().optional(),
   save: z.boolean().optional().default(true),
 });
 
@@ -29,13 +30,13 @@ router.post('/', async (req: Request, res: Response) => {
   const result = GenerateSchema.safeParse(req.body);
   if (!result.success) return res.status(400).json({ error: result.error.flatten() });
 
-  const { profile_id, company_name, company_description, goal, save } = result.data;
+  const { profile_id, company_name, company_description, goal, custom_instructions, save } = result.data;
 
   const profile = await profileService.getProfileById(profile_id);
   if (!profile) return res.status(404).json({ error: 'Profile not found' });
 
   try {
-    const output = await generateOutreach(profile, company_name, company_description, goal);
+    const output = await generateOutreach(profile, company_name, company_description, goal, custom_instructions);
 
     let draft = null;
     if (save) {

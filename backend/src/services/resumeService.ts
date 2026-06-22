@@ -10,10 +10,10 @@ const SYSTEM_PROMPT = `You are a resume parser. Extract structured profile infor
 - email: email address (or empty string if not found)
 - education: description of educational background (degrees, institutions, years, relevant coursework)
 - experience: description of work experience (companies, roles, dates, key responsibilities and achievements)
-- skills: list of technical and professional skills
+- skills: list of technical and professional skills in form of array only
 - interests: professional interests, passions, areas of curiosity
 - goals: career objectives, what they are looking for, where they want to go
-- extra: any other relevant information (projects, certifications, publications, volunteering)`;
+- extra: any other relevant information (projects, certifications, publications, volunteering) in form of string only`;
 
 export async function extractProfileFromResume(filePath: string, mimeType: string): Promise<{
   name: string;

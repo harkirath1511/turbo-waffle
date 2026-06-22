@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { z } from 'zod';
+import { string, z } from 'zod';
 import * as profileService from '../services/profileService';
 
 const router = Router();
@@ -9,7 +9,7 @@ const ProfileSchema = z.object({
   email: z.string().email().optional().or(z.literal('')),
   education: z.string().min(1),
   experience: z.string().min(1),
-  skills: z.string().min(1),
+  skills: z.array(z.string()).min(1),
   interests: z.string().min(1),
   goals: z.string().min(1),
   extra: z.string().optional(),
