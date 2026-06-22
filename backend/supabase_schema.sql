@@ -1,12 +1,14 @@
--- Run this in your Supabase SQL editor to create the required tables
+DROP TABLE IF EXISTS drafts;
+DROP TABLE IF EXISTS profiles;
 
-CREATE TABLE IF NOT EXISTS profiles (
+CREATE TABLE profiles (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
   email TEXT DEFAULT '',
   education TEXT NOT NULL DEFAULT '',
   experience TEXT NOT NULL DEFAULT '',
-  skills TEXT NOT NULL DEFAULT '',
+  skills TEXT[] NOT NULL DEFAULT '{}',
   interests TEXT NOT NULL DEFAULT '',
   goals TEXT NOT NULL DEFAULT '',
   extra TEXT DEFAULT '',
@@ -14,8 +16,9 @@ CREATE TABLE IF NOT EXISTS profiles (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS drafts (
+CREATE TABLE drafts (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   profile_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
   company_name TEXT NOT NULL,
   company_description TEXT NOT NULL,
@@ -29,6 +32,7 @@ CREATE TABLE IF NOT EXISTS drafts (
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS drafts_profile_id_idx ON drafts(profile_id);
-CREATE INDEX IF NOT EXISTS drafts_created_at_idx ON drafts(created_at DESC);
-CREATE INDEX IF NOT EXISTS profiles_created_at_idx ON profiles(created_at DESC);
+CREATE INDEX ON profiles(user_id);
+CREATE INDEX ON drafts(user_id);
+CREATE INDEX ON drafts(profile_id);
+CREATE INDEX ON drafts(created_at DESC);

@@ -1,19 +1,17 @@
-import { Router, Request, Response } from 'express';
+import { Router, Response } from 'express';
 import { z } from 'zod';
 import * as profileService from '../services/profileService';
 import * as draftService from '../services/draftService';
 import { generateOutreach } from '../services/generateService';
-import { OutreachGoal } from '../types';
+import type { OutreachGoal } from '../types';
+import { requireAuth, AuthRequest } from '../middleware/auth';
 
 const router = Router();
+router.use(requireAuth);
 
 const GOALS: OutreachGoal[] = [
-  'Internship',
-  'Job Opportunity',
-  'Freelance Work',
-  'Networking',
-  'Collaboration',
-  'Mentorship',
+  'Internship', 'Job Opportunity', 'Freelance Work',
+  'Networking', 'Collaboration', 'Mentorship',
 ];
 
 const GenerateSchema = z.object({
@@ -25,24 +23,19 @@ const GenerateSchema = z.object({
   save: z.boolean().optional().default(true),
 });
 
-
-router.post('/', async (req: Request, res: Response) => {
+router.post('/', async (req, res: Response) => {
+  const { userId } = req as unknown as AuthRequest;
   const result = GenerateSchema.safeParse(req.body);
   if (!result.success) return res.status(400).json({ error: result.error.flatten() });
 
   const { profile_id, company_name, company_description, goal, custom_instructions, save } = result.data;
 
-  const profile = await profileService.getProfileById(profile_id);
+  const profile = await profileService.getProfileById(userId, profile_id);
   if (!profile) return res.status(404).json({ error: 'Profile not found' });
 
   try {
     const output = await generateOutreach(profile, company_name, company_description, goal, custom_instructions);
-
-    let draft = null;
-    if (save) {
-      draft = await draftService.saveDraft(profile_id, company_name, company_description, goal, output);
-    }
-
+    const draft = save ? await draftService.saveDraft(userId, profile_id, company_name, company_description, goal, output) : null;
     res.json({ output, draft });
   } catch (err) {
     console.error('Generation error:', err);

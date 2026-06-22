@@ -3,8 +3,10 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import { extractProfileFromResume } from '../services/resumeService';
+import { requireAuth } from '../middleware/auth';
 
 const router = Router();
+router.use(requireAuth);
 
 const UPLOAD_DIR = path.join(__dirname, '..', '..', 'uploads');
 if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
@@ -19,7 +21,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
-  limits: { fileSize: 10 * 1024 * 1024 }, 
+  limits: { fileSize: 10 * 1024 * 1024 },
   fileFilter: (_req, file, cb) => {
     const allowed = ['application/pdf', 'text/plain'];
     if (allowed.includes(file.mimetype)) {
@@ -30,16 +32,10 @@ const upload = multer({
   },
 });
 
-
-
 router.post('/parse', upload.single('resume'), async (req: Request, res: Response) => {
-  if (!req.file) {
-    return res.status(400).json({ error: 'No file uploaded' });
-  }
-
+  if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
   try {
     const extracted = await extractProfileFromResume(req.file.path, req.file.mimetype);
-    
     fs.unlink(req.file.path, () => {});
     res.json(extracted);
   } catch (err) {
