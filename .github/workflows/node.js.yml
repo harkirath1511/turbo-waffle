@@ -3,6 +3,8 @@ name: CI_CD
 on:
   push:
     branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   build:
@@ -25,3 +27,24 @@ jobs:
       - name: Type check
         working-directory: backend
         run: npx tsc --noEmit
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /home/ubuntu/turbo-waffle
+            git pull origin main
+            cd backend
+            npm ci --omit=dev
+            npm run build
+            pm2 restart IntroForge || pm2 start dist/index.js --name IntroForge
+            pm2 save
