@@ -9,7 +9,7 @@ import draftsRouter from './routes/drafts';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = Number(process.env.PORT) || 3000;
 
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
@@ -20,7 +20,7 @@ app.use('/resume', resumeRouter);
 app.use('/generate', generateRouter);
 app.use('/drafts', draftsRouter);
 
-app.get('/health', (_req, res) => {
+app.get('/', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
@@ -29,8 +29,9 @@ app.use((err: Error, _req: express.Request, res: express.Response, _next: expres
   res.status(500).json({ error: err.message || 'Internal server error' });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+const HOST = '0.0.0.0'; // Crucial for AWS deployment
 
+app.listen(PORT, HOST, () => {
+    console.log(`Server running on http://${HOST}:${PORT}`);
+});
 export default app;
