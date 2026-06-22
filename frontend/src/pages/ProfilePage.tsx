@@ -40,24 +40,22 @@ export default function ProfilePage() {
   const [parsing, setParsing] = useState(false);
 
   useEffect(() => {
-    api.getProfiles().then(profiles => {
-      if (profiles.length > 0) {
-        setProfile(profiles[0]);
-        setForm({
-          name: profiles[0].name,
-          email: profiles[0].email ?? '',
-          education: profiles[0].education,
-          experience: profiles[0].experience,
-          skills: profiles[0].skills,
-          interests: profiles[0].interests,
-          goals: profiles[0].goals,
-          extra: profiles[0].extra ?? '',
-        });
-      } else {
-        setEditing(true);
-      }
-    }).catch(() => {
-      toast.error('Failed to load profile');
+    api.getMyProfile().then(p => {
+      setProfile(p);
+      setForm({
+        name: p.name,
+        email: p.email ?? '',
+        education: p.education,
+        experience: p.experience,
+        skills: p.skills,
+        interests: p.interests,
+        goals: p.goals,
+        extra: p.extra ?? '',
+      });
+    }).catch((err) => {
+      // 404 means no profile yet — start in create mode
+      if (err?.response?.status !== 404) toast.error('Failed to load profile');
+      setEditing(true);
     }).finally(() => setLoading(false));
   }, []);
 

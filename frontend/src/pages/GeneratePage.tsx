@@ -21,9 +21,7 @@ export default function GeneratePage() {
   const [lastInput, setLastInput] = useState<{ companyName: string; companyDesc: string; goal: OutreachGoal; customInstructions: string } | null>(null);
 
   useEffect(() => {
-    api.getProfiles().then(profiles => {
-      if (profiles.length > 0) setProfile(profiles[0]);
-    }).catch(() => {}).finally(() => setLoadingProfile(false));
+    api.getMyProfile().then(setProfile).catch(() => {}).finally(() => setLoadingProfile(false));
   }, []);
 
   const handleGenerate = async () => {

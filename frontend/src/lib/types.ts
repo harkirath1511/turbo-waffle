@@ -17,6 +17,7 @@ export const GOALS: OutreachGoal[] = [
 
 export interface Profile {
   id: string;
+  user_id: string;
   name: string;
   email?: string;
   education: string;
@@ -31,6 +32,7 @@ export interface Profile {
 
 export interface Draft {
   id: string;
+  user_id: string;
   profile_id: string;
   company_name: string;
   company_description: string;

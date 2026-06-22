@@ -1,6 +1,9 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import { AuthProvider } from './lib/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar';
+import AuthPage from './pages/AuthPage';
 import ProfilePage from './pages/ProfilePage';
 import GeneratePage from './pages/GeneratePage';
 import DraftsPage from './pages/DraftsPage';
@@ -8,24 +11,31 @@ import DraftsPage from './pages/DraftsPage';
 export default function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-white dark:bg-gray-950">
-        <Navbar />
+      <AuthProvider>
         <Routes>
-          <Route path="/" element={<Navigate to="/profile" replace />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/generate" element={<GeneratePage />} />
-          <Route path="/drafts" element={<DraftsPage />} />
+          <Route path="/auth" element={<AuthPage />} />
+          <Route
+            path="/*"
+            element={
+              <ProtectedRoute>
+                <div className="min-h-screen bg-white dark:bg-gray-950">
+                  <Navbar />
+                  <Routes>
+                    <Route path="/" element={<Navigate to="/profile" replace />} />
+                    <Route path="/profile" element={<ProfilePage />} />
+                    <Route path="/generate" element={<GeneratePage />} />
+                    <Route path="/drafts" element={<DraftsPage />} />
+                  </Routes>
+                </div>
+              </ProtectedRoute>
+            }
+          />
         </Routes>
-      </div>
-      <Toaster
-        position="bottom-right"
-        toastOptions={{
-          style: {
-            borderRadius: '12px',
-            fontSize: '14px',
-          },
-        }}
-      />
+        <Toaster
+          position="bottom-right"
+          toastOptions={{ style: { borderRadius: '12px', fontSize: '14px' } }}
+        />
+      </AuthProvider>
     </BrowserRouter>
   );
 }
