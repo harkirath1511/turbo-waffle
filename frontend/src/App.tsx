@@ -3,6 +3,7 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './lib/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import AuthPage from './pages/AuthPage';
 import ProfilePage from './pages/ProfilePage';
 import GeneratePage from './pages/GeneratePage';
@@ -18,14 +19,17 @@ export default function App() {
             path="/*"
             element={
               <ProtectedRoute>
-                <div className="app-canvas">
+                <div className="app-canvas flex flex-col min-h-screen">
                   <Navbar />
-                  <Routes>
-                    <Route path="/" element={<Navigate to="/profile" replace />} />
-                    <Route path="/profile" element={<ProfilePage />} />
-                    <Route path="/generate" element={<GeneratePage />} />
-                    <Route path="/drafts" element={<DraftsPage />} />
-                  </Routes>
+                  <div className="flex-1">
+                    <Routes>
+                      <Route path="/" element={<Navigate to="/profile" replace />} />
+                      <Route path="/profile" element={<ProfilePage />} />
+                      <Route path="/generate" element={<GeneratePage />} />
+                      <Route path="/drafts" element={<DraftsPage />} />
+                    </Routes>
+                  </div>
+                  <Footer />
                 </div>
               </ProtectedRoute>
             }

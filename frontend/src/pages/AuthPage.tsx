@@ -70,7 +70,22 @@ export default function AuthPage() {
           </div>
         </div>
 
-        <p className="text-xs text-on-dark-soft/60">Raw profile in · finished outreach out</p>
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <p className="font-display font-600 text-white text-sm">Harkirat Singh</p>
+            <a href="mailto:singharkirath1511@gmail.com" className="text-xs text-on-dark-soft hover:text-accent-lime transition-colors">
+              singharkirath1511@gmail.com
+            </a>
+          </div>
+          <a
+            href="https://digitalheroesco.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-forge inline-flex items-center px-4 py-2 text-sm"
+          >
+            Built for Digital Heroes
+          </a>
+        </div>
       </div>
 
       {/* Right — the form */}
@@ -139,6 +154,24 @@ export default function AuthPage() {
                 {mode === 'login' ? 'Create an account' : 'Sign in'}
               </button>
             </p>
+          </div>
+
+          {/* Mobile-only contact + attribution (left panel is hidden below lg) */}
+          <div className="lg:hidden mt-10 pt-6 border-t border-white/10 flex flex-col items-center gap-4">
+            <div className="text-center">
+              <p className="font-display font-600 text-white text-sm">Harkirat Singh</p>
+              <a href="mailto:singharkirath1511@gmail.com" className="text-xs text-on-dark-soft hover:text-accent-lime transition-colors">
+                singharkirath1511@gmail.com
+              </a>
+            </div>
+            <a
+              href="https://digitalheroesco.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-forge inline-flex items-center px-5 py-2.5 text-sm"
+            >
+              Built for Digital Heroes
+            </a>
           </div>
         </div>
       </div>
