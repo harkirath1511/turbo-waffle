@@ -1,0 +1,11 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "vite",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "installCommand": "npm install",
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "http://ec2-13-232-166-31.ap-south-1.compute.amazonaws.com:3000/$1" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}

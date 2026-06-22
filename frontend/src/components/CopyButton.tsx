@@ -13,13 +13,13 @@ export default function CopyButton({ text, className = '' }: { text: string; cla
   return (
     <button
       onClick={handleCopy}
-      className={`inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg border transition-colors ${
+      className={`inline-flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg border transition-colors ${
         copied
-          ? 'border-green-500 text-green-600 bg-green-50 dark:bg-green-950'
-          : 'border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:border-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+          ? 'text-accent-deep border-accent bg-accent-tint'
+          : 'text-ink-faint border-line hover:text-ink hover:border-accent'
       } ${className}`}
     >
-      {copied ? <Check size={14} /> : <Copy size={14} />}
+      {copied ? <Check size={13} /> : <Copy size={13} />}
       {copied ? 'Copied' : 'Copy'}
     </button>
   );

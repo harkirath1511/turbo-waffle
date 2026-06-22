@@ -7,8 +7,8 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="animate-spin text-gray-400" size={24} />
+      <div className="app-canvas flex items-center justify-center min-h-screen">
+        <Loader2 className="animate-spin text-on-dark-soft" size={24} />
       </div>
     );
   }

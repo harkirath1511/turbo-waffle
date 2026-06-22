@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Zap, Loader2 } from 'lucide-react';
+import { Hammer, Loader2 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
@@ -37,70 +37,109 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-950 flex items-center justify-center px-4">
-      <div className="w-full max-w-sm">
-        <div className="flex items-center justify-center gap-2 mb-8">
-          <Zap size={22} className="text-violet-600" />
-          <span className="text-xl font-semibold text-gray-900 dark:text-white">Startup Icebreaker</span>
+    <div className="app-canvas grid lg:grid-cols-2">
+      {/* Left — the pitch, on the dark canvas */}
+      <div className="hidden lg:flex flex-col justify-between p-12 xl:p-16 relative overflow-hidden">
+        <div className="flex items-center gap-2.5">
+          <span className="grid place-items-center w-10 h-10 rounded-xl text-[#042f2a] bg-gradient-to-br from-[#84e6b0] to-[#14b8a6] shadow-[0_6px_16px_-4px_rgba(20,184,166,0.7)]">
+            <Hammer size={19} strokeWidth={2.4} />
+          </span>
+          <span className="font-display text-xl font-700 tracking-tight text-white">
+            Intro<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#84e6b0] to-[#14b8a6]">Forge</span>
+          </span>
         </div>
 
-        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-8">
-          <h1 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
-            {mode === 'login' ? 'Welcome back' : 'Create an account'}
-          </h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-            {mode === 'login' ? 'Sign in to your account.' : 'Start sending better cold emails.'}
+        <div className="max-w-md">
+          <p className="eyebrow mb-4">Cold outreach, forged to fit</p>
+          <h2 className="font-display text-4xl xl:text-5xl font-800 leading-[1.1] text-white tracking-tight">
+            Stop sending emails that get{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#84e6b0] to-[#14b8a6]">ignored.</span>
+          </h2>
+          <p className="text-on-dark-soft mt-5 text-lg leading-relaxed">
+            Drop in your background once. Point us at any company.
+            Get a sharp, personalised email that actually sounds like you — in seconds.
           </p>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                Email
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                required
-                className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition"
-              />
-            </div>
+          <div className="flex gap-8 mt-10">
+            {[['3', 'steps to send'], ['~5s', 'to a draft'], ['1', 'profile, reused']].map(([n, l]) => (
+              <div key={l}>
+                <div className="font-display text-2xl font-700 text-white">{n}</div>
+                <div className="text-xs text-on-dark-soft mt-0.5">{l}</div>
+              </div>
+            ))}
+          </div>
+        </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                Password
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                placeholder="••••••••"
-                required
-                minLength={6}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition"
-              />
-            </div>
+        <p className="text-xs text-on-dark-soft/60">Raw profile in · finished outreach out</p>
+      </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-2.5 bg-violet-600 hover:bg-violet-700 disabled:opacity-60 text-white rounded-xl font-medium text-sm transition-colors flex items-center justify-center gap-2"
-            >
-              {loading && <Loader2 size={15} className="animate-spin" />}
-              {mode === 'login' ? 'Sign in' : 'Create account'}
-            </button>
-          </form>
+      {/* Right — the form */}
+      <div className="flex items-center justify-center px-4 py-12 lg:bg-white">
+        <div className="w-full max-w-sm">
+          {/* compact brand for mobile */}
+          <div className="flex items-center gap-2.5 mb-8 lg:hidden">
+            <span className="grid place-items-center w-10 h-10 rounded-xl text-[#042f2a] bg-gradient-to-br from-[#84e6b0] to-[#14b8a6]">
+              <Hammer size={19} strokeWidth={2.4} />
+            </span>
+            <span className="font-display text-xl font-700 tracking-tight text-white lg:text-ink">
+              Intro<span className="text-accent">Forge</span>
+            </span>
+          </div>
 
-          <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-5">
-            {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
-            <button
-              onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}
-              className="text-violet-600 dark:text-violet-400 font-medium hover:underline"
-            >
-              {mode === 'login' ? 'Sign up' : 'Sign in'}
-            </button>
-          </p>
+          <div className="bg-white rounded-[22px] border border-line shadow-[0_20px_50px_-12px_rgba(15,23,41,0.45)] p-8 lg:shadow-none lg:border-0 lg:p-0 lg:bg-transparent">
+            <h1 className="font-display text-2xl font-700 text-ink mb-1.5 tracking-tight">
+              {mode === 'login' ? 'Welcome back' : 'Create your account'}
+            </h1>
+            <p className="text-sm text-ink-soft mb-7">
+              {mode === 'login' ? 'Sign in to pick up where you left off.' : 'Start shaping cold emails that land.'}
+            </p>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="eyebrow block mb-2">Email</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  required
+                  className="field"
+                />
+              </div>
+
+              <div>
+                <label className="eyebrow block mb-2">Password</label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                  minLength={6}
+                  className="field"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="btn-forge w-full py-3 text-sm flex items-center justify-center gap-2 mt-2"
+              >
+                {loading && <Loader2 size={15} className="animate-spin" />}
+                {mode === 'login' ? 'Sign in' : 'Create account'}
+              </button>
+            </form>
+
+            <p className="text-center text-sm text-ink-soft mt-6">
+              {mode === 'login' ? "New here? " : 'Already have an account? '}
+              <button
+                onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}
+                className="text-accent-deep font-600 hover:underline"
+              >
+                {mode === 'login' ? 'Create an account' : 'Sign in'}
+              </button>
+            </p>
+          </div>
         </div>
       </div>
     </div>

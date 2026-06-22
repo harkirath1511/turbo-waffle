@@ -18,7 +18,7 @@ export default function App() {
             path="/*"
             element={
               <ProtectedRoute>
-                <div className="min-h-screen bg-white dark:bg-gray-950">
+                <div className="app-canvas">
                   <Navbar />
                   <Routes>
                     <Route path="/" element={<Navigate to="/profile" replace />} />
@@ -33,7 +33,15 @@ export default function App() {
         </Routes>
         <Toaster
           position="bottom-right"
-          toastOptions={{ style: { borderRadius: '12px', fontSize: '14px' } }}
+          toastOptions={{
+            style: {
+              borderRadius: '12px',
+              fontSize: '14px',
+              background: '#0f1729',
+              color: '#eaf0fb',
+              border: '1px solid rgba(255,255,255,0.1)',
+            },
+          }}
         />
       </AuthProvider>
     </BrowserRouter>
