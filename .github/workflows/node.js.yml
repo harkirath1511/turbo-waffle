@@ -40,11 +40,13 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
+         script: |
             cd /home/ubuntu/turbo-waffle
             git pull origin main
             cd backend
             npm ci --omit=dev
             npm run build
-            pm2 restart IntroForge || pm2 start dist/index.js --name IntroForge
+            pm2 delete IntroForge || true
+            sudo kill -9 $(sudo lsof -t -i:3000) || true
+            pm2 start dist/index.js --name IntroForge
             pm2 save
