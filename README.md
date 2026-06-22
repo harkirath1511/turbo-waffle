@@ -1,4 +1,4 @@
-# Startup Icebreaker
+# IntroForge
 
 A tool that helps you write highly personalized cold outreach emails in seconds — without spending 20–30 minutes researching and tailoring each one.
 
